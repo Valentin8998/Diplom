@@ -13,85 +13,28 @@ class MainPage:
         self.wait = WebDriverWait(driver, 10)
         self._navigate_to_store()
 
-    def _navigate_to_store(self):
+    def _navigate_to_store(self) -> None:
         """метод для перехода на страницу магазина"""
         self.driver.get(self.BASE_URL)
         self.wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
 
-    def adding_to_cart(self):
-        """Тест добавления товара в корзину и проверки количества"""
-        GAME_CARD_SELECTOR = (
-            ".carousel_items.store_capsule_container a[href*='/app/' ]"
-        )
-        games = self.wait.until(
-            EC.presence_of_all_elements_located((
-                By.CSS_SELECTOR, GAME_CARD_SELECTOR))
-        )
-        if games:
-            games[0].click()  # первая игра
-        else:
-            print("Игры не найдены")
-
-        button = self.wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//span[text()='В корзину']/parent::a")
-            )
-        )
-        button.click()
-
-        # нажатие кнопки "открыть корзину"
-        self.wait.until(
-                EC.element_to_be_clickable(
-                    (By.CSS_SELECTOR, (
-                        ".DialogButton._DialogLayout.Primary.Focusable"))
+    def search(self, game_name: str, game_app: str) -> None:
+        """Поиск в магазине"""
+        search = self.driver.find_element(
+         By.XPATH, '//input[@placeholder="Поиск по магазину"]'
                 )
-            ).click()
-        element = self.wait.until(
-            EC.presence_of_element_located((
-                By.CSS_SELECTOR, ".bCGAC51za6R_thjPd7_vw"))
-            )
-        actual_text = element.text
-        expected_text = "Ваша корзина (товаров: 1)"
-        assert actual_text == expected_text
-
-    def clear_basket(self):
-        element = self.wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//div[contains(text(), 'Удалить')]")
-            )
-        )
-        element.click()
-        self.wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//*[contains(text(), 'Ваша корзина пуста')]"))
-            )
-
-    def search_by_name(self):
-        """Тест поиска товара по названию"""
-        search = self.driver.find_element(
-            By.XPATH, '//input[@placeholder="Поиск по магазину"]'
-        )
-        search.click()
-        search.send_keys("Baldur's Gate 3")
-
-    def total_cost(self):
-        """Тест расчета общей стоимости корзины"""
-        # Поиск и добавление первой игры
-        search = self.driver.find_element(
-            By.XPATH, '//input[@placeholder="Поиск по магазину"]'
-        )
         search.click()
         search.clear()
-        search.send_keys("Baldur's Gate 3")
+        search.send_keys(game_name)
         element = self.wait.until(
          EC.element_to_be_clickable(
-             (By.CSS_SELECTOR, 'a[href*="app/1086940"]')
-         )
-        )
-        # element.click()
-        # Вместо element.click() используем JavaScript
+          (By.CSS_SELECTOR, f'a[href*="{game_app}"]')
+            )
+                )
         self.driver.execute_script("arguments[0].click();", element)
 
+    def adding(self) -> None:
+        """Добавление игры в корзину"""
         button = self.wait.until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//span[text()='В корзину']/parent::a")
@@ -99,45 +42,41 @@ class MainPage:
         )
         button.click()
 
+    def continue_shopping(self) -> None:
+        """Нажатие кнопки 'продолжить покупки'"""
         next_btn = self.wait.until(
             EC.element_to_be_clickable(
-               (By.CSS_SELECTOR,
-                '.DialogButton._DialogLayout.Secondary.Focusable')
-                )
+                (By.CSS_SELECTOR,
+                    '.DialogButton._DialogLayout.Secondary.Focusable')
+                    )
         )
         next_btn.click()
 
-        # Поиск и добавление второй игры
-        search = self.driver.find_element(
-            By.XPATH, '//input[@placeholder="Поиск по магазину"]'
-        )
-        search.click()
-        search.clear()
-        search.send_keys("Gothic 1 Remake")
-        element2 = self.wait.until(
-            EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, 'a[href*="app/1297900"]')
-                )
-        )
-        element2.click()
-        button = self.wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//span[text()='В корзину']/parent::a")
-            )
-        )
-        button.click()
-        # Открытие корзины и проверка суммы
+    def basket(self) -> None:
+        """переход в корзину"""
         kor = self.wait.until(
             EC.element_to_be_clickable(
              (By.CSS_SELECTOR, ".DialogButton._DialogLayout.Primary.Focusable")
-             )
+            )
         )
+        kor.click()
+
+    def assert_basket(self) -> None:
+        """Открытие корзины и проверка суммы
+        строго после добавление товаров в корзину"""
+
+        kor = self.wait.until(
+            EC.element_to_be_clickable(
+                (By.CSS_SELECTOR,
+                 ".DialogButton._DialogLayout.Primary.Focusable")
+                )
+            )
         kor.click()
 
         def get_second_element_with_text(driver):
             elements = driver.find_elements(
                 By.CSS_SELECTOR, '._2WLaY5TxjBGVyuWe_6KS3N'
-                )
+            )
             if len(elements) >= 2 and elements[1].text != '':
                 return elements[1]
             return False
@@ -148,3 +87,13 @@ class MainPage:
 
         # Сравниваем с ЛАТИНИЦЕЙ!
         assert sumc.text == "4698 руб"
+
+    def asert_product(self) -> None:
+        """проверка кол-ва товаров"""
+        element = self.wait.until(
+            EC.presence_of_element_located((
+                By.CSS_SELECTOR, ".bCGAC51za6R_thjPd7_vw"))
+            )
+        actual_text = element.text
+        expected_text = "Ваша корзина (товаров: 1)"
+        assert actual_text == expected_text

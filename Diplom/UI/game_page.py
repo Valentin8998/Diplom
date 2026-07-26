@@ -8,21 +8,21 @@ class GamePage:
 
     BASE_URL = 'https://store.steampowered.com/app/1297900/Gothic_1_Remake/'
 
-    def __init__(self, driver):
+    def __init__(self, driver) -> None:
         """Конструктор класса GamePage"""
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
         self._navigate_to_game()
 
-    def _navigate_to_game(self):
+    def _navigate_to_game(self) -> None:
         """метод для перехода на страницу игры"""
         self.driver.get(self.BASE_URL)
         self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "body"))
         )
 
-    def open_news(self):
-        """Тест открытия новостей со страницы игры"""
+    def open_news(self) -> None:
+        """Тест открытия новостей со страницы игры'Gothic 1 Remake'"""
         element = self.wait.until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//a[contains(text(), 'Показать все')]")
