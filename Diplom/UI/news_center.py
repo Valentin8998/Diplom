@@ -22,7 +22,6 @@ class NewsCenter:
             )
 
     def game_news(self, game_name: str) -> None:
-        # Path of Exile 2
         """Тест поиска новостей по названию игры"""
         selector = (
             '.DialogInput.DialogInputPlaceholder.DialogTextInputBase.Focusable'
