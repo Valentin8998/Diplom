@@ -6,7 +6,6 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import pytest
 import allure
-import time
 
 
 @pytest.fixture
@@ -28,16 +27,12 @@ def test_adding_to_cart(driver):
     mainpage = MainPage(driver)
     with allure.step("Ввести в поле 'Поиск по магазине' название игры"):
         mainpage.search("Baldur's Gate 3", "app/1086940")
-        time.sleep(2)
     with allure.step("Нажать кнопку 'В корзину'"):
         mainpage.adding()
-        time.sleep(2)
     with allure.step("Нажать кнопку 'Открыть корзину'"):
         mainpage.basket()
-        time.sleep(2)
     with allure.step("Проверить что товаров в корзине 1"):
         mainpage.asert_product()
-        time.sleep(2)
 
 
 @pytest.mark.ui
