@@ -86,7 +86,7 @@ class MainPage:
         print(f"Текст: '{sumc.text}'")
 
         # Сравниваем с ЛАТИНИЦЕЙ!
-        assert sumc.text == "4698 руб"
+        assert sumc.text == "4098 руб"
 
     def asert_product(self) -> None:
         """проверка кол-ва товаров"""

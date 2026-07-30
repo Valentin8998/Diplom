@@ -20,7 +20,6 @@ def driver():
 
 
 @pytest.mark.ui
-@pytest.mark.u
 @allure.title("Добавление игры в корзину")
 @allure.story("Корзина")
 def test_adding_to_cart(driver):

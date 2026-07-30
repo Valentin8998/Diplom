@@ -15,5 +15,9 @@
 ### pytest -m api
 ### pytest
 
+## Заполнение файла config_example.py
+### 1. Заменить 'your_steam_api_key' на ваш web api key в Steam
+### 2. Заменить 'your_steam_id' и 'your_steam_ids' на ваш steamid
+
 ## Документация
 ### https://valentin888.yonote.ru/doc/opisanie-proekta-HEYqAfPJRV
